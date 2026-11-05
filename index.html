@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockWise Assistant — Field Demo</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --site-primary: #173D32;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #DCEBE4;
+  --site-on-secondary: #173D32;
+  --site-background: #F3F6F3;
+  --site-on-background: #17251F;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: light-dark(#FFFFFF, #18231E);
+  --surface-muted: light-dark(#EEF3EF, #202E27);
+  --text-muted: light-dark(#63736A, #AAB9B0);
+  --line: light-dark(#DCE5DE, #34443A);
+  --accent: #2C765B;
+  --danger: #B33D35;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); }
+#app { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); }
+button, input { font: inherit; }
+.topbar { background: var(--site-primary); color: var(--site-on-primary); padding: calc(20px * var(--site-spacing-scale)) max(20px, calc((100vw - 980px)/2)); }
+.brand { max-width: 940px; margin: auto; display:flex; align-items:center; gap:13px; }
+.logo { width:48px; height:48px; border-radius:14px; background:#fff; color:var(--site-primary); display:grid; place-items:center; font-size:24px; font-weight:800; }
+.brand h1 { font:700 calc(21px * var(--site-heading-scale))/1.2 var(--site-font-heading); margin:0; letter-spacing:-.4px; }
+.brand p { margin:4px 0 0; color:#D8E8DF; font-size:12px; }
+main { max-width:980px; margin:auto; padding:26px 18px 52px; }
+.intro { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.eyebrow { color:var(--accent); font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; }
+h2 { font:750 calc(29px * var(--site-heading-scale))/1.12 var(--site-font-heading); letter-spacing:-1px; margin:7px 0 8px; }
+.sub { color:var(--text-muted); max-width:610px; line-height:1.55; font-size:14px; margin:0; }
+.demo-tag { background:var(--site-secondary); color:var(--site-on-secondary); border-radius:999px; padding:8px 12px; font-size:11px; font-weight:800; white-space:nowrap; }
+.layout { display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:18px; align-items:start; }
+.phone { border:1px solid var(--line); border-radius:25px; overflow:hidden; background:var(--surface); box-shadow:0 12px 35px #173d3212; }
+.chat-head { background:var(--site-primary); color:white; padding:14px 17px; display:flex; align-items:center; gap:11px; }
+.avatar { width:37px; height:37px; border-radius:50%; background:#fff; color:var(--site-primary); display:grid; place-items:center; font-weight:900; }
+.chat-head strong { display:block; font-size:14px; }
+.chat-head small { color:#D8E8DF; font-size:11px; }
+.chat-body { min-height:465px; padding:17px; background:var(--surface-muted); }
+.status { display:flex; justify-content:space-between; color:var(--text-muted); font-size:10px; font-weight:700; letter-spacing:.5px; margin-bottom:13px; }
+.bubble { background:var(--surface); border:1px solid var(--line); border-radius:5px 16px 16px 16px; padding:14px; max-width:100%; font-size:13px; line-height:1.5; box-shadow:0 2px 5px #00000008; }
+.bubble p { margin:0 0 10px; }
+.bubble p:last-child { margin-bottom:0; }
+.muted { color:var(--text-muted); font-size:11px; }
+.field-label { display:block; font-size:11px; font-weight:750; margin:12px 0 6px; }
+input { width:100%; border:1px solid var(--line); border-radius:10px; padding:12px; background:var(--surface); color:var(--site-on-background); outline:none; }
+input:focus { border-color:var(--accent); box-shadow:0 0 0 3px #2c765b20; }
+.btn { border:0; border-radius:11px; padding:12px 15px; background:var(--site-primary); color:white; font-weight:750; font-size:12px; cursor:pointer; width:100%; margin-top:11px; }
+.btn:hover { filter:brightness(1.12); }
+.btn.secondary { background:var(--surface); border:1px solid var(--line); color:var(--site-on-background); }
+.btn.text { background:transparent; color:var(--text-muted); }
+.langs { display:flex; gap:8px; margin-top:12px; }
+.langs button { flex:1; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--surface); color:var(--site-on-background); font-weight:700; cursor:pointer; }
+.langs button.active { background:var(--site-secondary); border-color:var(--accent); color:var(--site-on-secondary); }
+.menu { display:grid; gap:7px; margin-top:12px; }
+.menu button { display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:11px; border:1px solid var(--line); border-radius:11px; background:var(--surface); color:var(--site-on-background); cursor:pointer; font-size:12px; font-weight:700; }
+.menu button:hover { border-color:var(--accent); }
+.num { display:grid; place-items:center; width:25px; height:25px; border-radius:8px; background:var(--surface-muted); color:var(--accent); font-size:11px; }
+.result-row { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:12px; }
+.result-row span { color:var(--text-muted); }
+.result-row strong { text-align:right; }
+.error { color:var(--danger); font-size:11px; margin-top:8px; }
+.side { display:grid; gap:12px; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:17px; padding:16px; }
+.panel h3 { margin:0 0 9px; font-size:14px; }
+.panel p, .panel li { color:var(--text-muted); font-size:12px; line-height:1.55; }
+.panel ul { padding-left:18px; margin:8px 0 0; }
+.step { display:flex; gap:10px; align-items:flex-start; margin:11px 0; }
+.step b { width:23px; height:23px; border-radius:8px; display:grid; place-items:center; background:var(--site-secondary); color:var(--site-on-secondary); font-size:11px; flex-shrink:0; }
+.step span { font-size:12px; line-height:1.45; color:var(--text-muted); }
+.notice { background:var(--site-secondary); color:var(--site-on-secondary); border-radius:12px; padding:12px; font-size:11px; line-height:1.5; margin-top:12px; }
+.footer { text-align:center; color:var(--text-muted); font-size:10px; padding:13px; }
+@media(max-width:760px) { .layout { grid-template-columns:1fr; } .intro { align-items:flex-start; flex-direction:column; } .chat-body { min-height:420px; } h2 { font-size:26px; } }
+</style>
+</head>
+<body>
+<div id="app">
+<header class="topbar"><div class="brand"><div class="logo">S</div><div><h1>StockWise Solutions</h1><p>Your shop. Your numbers. Better decisions.</p></div></div></header>
+<main>
+<div class="intro"><div><div class="eyebrow">Customer field demonstration</div><h2>Meet StockWise Assistant</h2><p class="sub">Show shop owners how they can securely check stock, stock value, sales, purchases and losses from their phone.</p></div><div class="demo-tag">INTERACTIVE DEMO · SAMPLE DATA</div></div>
+<div class="layout">
+<section class="phone" aria-label="StockWise Assistant demo chat">
+<div class="chat-head"><div class="avatar">S</div><div><strong>StockWise Assistant</strong><small>Virtual shop assistant · Demo</small></div></div>
+<div class="chat-body"><div class="status"><span>DEMO CUSTOMER: SW111</span><span>● DEMO MODE</span></div><div id="screen"></div></div>
+<div class="footer">StockWise Solutions · Customer demonstration only</div>
+</section>
+<aside class="side">
+<div class="panel"><h3>How to demonstrate</h3><div class="step"><b>1</b><span>Let the customer choose English or Kiswahili.</span></div><div class="step"><b>2</b><span>Enter the demo PIN <strong>1440</strong> to show secure sign-in.</span></div><div class="step"><b>3</b><span>Tap each menu option to explore sample reports.</span></div><div class="step"><b>4</b><span>Explain how real reports will be based on their verified shop records.</span></div></div>
+<div class="panel"><h3>What the service helps reveal</h3><ul><li>How much money is tied up in stock.</li><li>Which products need reordering.</li><li>Where stock is moving slowly.</li><li>Recorded damage, expiry and losses.</li><li>Sales and gross-margin performance.</li></ul></div>
+<div class="notice"><strong>Important:</strong> This is a prototype, not a live WhatsApp bot. All client details, PINs and figures shown are fictional. It is not connected to a real database.</div>
+</aside>
+</div>
+</main>
+</div>
+<script>
+const screen = document.getElementById('screen');
+let lang = 'English';
+let page = 'welcome';
+let error = '';
+const menus = {
+ English: ['Current stock','Total stock value','Sales summary','Stock received','Damaged / expired goods','Weekly stock report','Request assistance'],
+ Kiswahili: ['Hisa ya sasa','Thamani ya jumla ya bidhaa','Muhtasari wa mauzo','Bidhaa zilizopokelewa','Bidhaa zilizoharibika / kuisha muda','Ripoti ya wiki','Omba msaada']
+};
+const reports = [
+ {title:'Current stock', intro:'Here is your current stock overview.', rows:[['Total product lines','85'],['Products in stock','79'],['Out of stock','6'],['Low stock alerts','9']]},
+ {title:'Total stock value', intro:'Your shop’s current stock valuation:', rows:[['Buying value','KSh 186,450'],['Potential selling value','KSh 224,800'],['Potential gross margin','KSh 38,350']]},
+ {title:'Sales summary', intro:'Your sample sales performance for this week:', rows:[['Total sales','KSh 48,500'],['Cost of goods sold','KSh 35,200'],['Gross profit','KSh 13,300']]},
+ {title:'Stock received', intro:'Purchases recorded this week:', rows:[['Deliveries','8'],['Total purchase value','KSh 26,400'],['Items received','32 product lines']]},
+ {title:'Damaged / expired goods', intro:'Recorded losses:', rows:[['Damaged goods','KSh 850'],['Expired goods','KSh 1,200'],['Total recorded loss','KSh 2,050']]},
+ {title:'Weekly stock report', intro:'Your weekly business overview:', rows:[['Opening stock value','KSh 190,000'],['Purchases','KSh 26,400'],['Closing stock value','KSh 181,200'],['Recorded stock losses','KSh 2,050']]},
+ {title:'Request assistance', intro:'Your request has been prepared for the StockWise administrator.', rows:[['Support status','Demo request'],['Administrator','StockWise Solutions']]}
+];
+const sw = [
+ {title:'Hisa ya sasa', intro:'Huu hapa muhtasari wa hisa yako.', rows:[['Jumla ya aina za bidhaa','85'],['Bidhaa zilizopo','79'],['Bidhaa zilizoisha','6'],['Bidhaa zinazokaribia kuisha','9']]},
+ {title:'Thamani ya jumla ya bidhaa', intro:'Thamani ya hisa ya duka lako:', rows:[['Thamani ya ununuzi','KSh 186,450'],['Thamani ya mauzo inayowezekana','KSh 224,800'],['Faida ghafi inayowezekana','KSh 38,350']]},
+ {title:'Muhtasari wa mauzo', intro:'Mauzo ya mfano ya wiki hii:', rows:[['Jumla ya mauzo','KSh 48,500'],['Gharama ya bidhaa zilizouzwa','KSh 35,200'],['Faida ghafi','KSh 13,300']]},
+ {title:'Bidhaa zilizopokelewa', intro:'Manunuzi yaliyorekodiwa wiki hii:', rows:[['Mizigo iliyopokelewa','8'],['Thamani ya manunuzi','KSh 26,400'],['Aina za bidhaa','32']]},
+ {title:'Bidhaa zilizoharibika / kuisha muda', intro:'Hasara zilizorekodiwa:', rows:[['Bidhaa zilizoharibika','KSh 850'],['Bidhaa zilizoisha muda','KSh 1,200'],['Jumla ya hasara','KSh 2,050']]},
+ {title:'Ripoti ya wiki', intro:'Muhtasari wa biashara yako:', rows:[['Thamani ya hisa ya mwanzo','KSh 190,000'],['Manunuzi','KSh 26,400'],['Thamani ya hisa ya mwisho','KSh 181,200'],['Hasara zilizorekodiwa','KSh 2,050']]},
+ {title:'Omba msaada', intro:'Ombi lako limeandaliwa kwa msimamizi wa StockWise.', rows:[['Hali ya ombi','Ombi la majaribio'],['Msimamizi','StockWise Solutions']]}
+];
+function button(label, action, cls='btn') { return `<button class="${cls}" data-action="${action}">${label}</button>`; }
+function render() {
+ const swahili = lang === 'Kiswahili';
+ if(page === 'welcome') {
+  screen.innerHTML = `<div class="bubble"><p><strong>StockWise Assistant</strong></p><p>${swahili ? 'Habari! Karibu StockWise Solutions. Mimi ni msaidizi wako wa duka. Naweza kukusaidia kuelewa hisa, mauzo na utendaji wa biashara yako.' : 'Hello! Welcome to StockWise Solutions. I am your virtual shop assistant. I can help you understand your shop’s stock, sales and business performance.'}</p><p><strong>${swahili ? 'Chagua lugha unayopendelea:' : 'Please select your preferred language:'}</strong></p><div class="langs"><button class="${lang==='English'?'active':''}" data-action="english">English</button><button class="${swahili?'active':''}" data-action="swahili">Kiswahili</button></div>${button(swahili?'Endelea':'Continue','login')}</div>`;
+ } else if(page === 'login') {
+  screen.innerHTML = `<div class="bubble"><p><strong>${swahili?'Uthibitisho wa mteja':'Client verification'}</strong></p><p>${swahili?'Weka PIN yako ya tarakimu nne ili kupata taarifa za duka lako.':'Please enter your four-digit PIN to access your shop information.'}</p><p class="muted">Client code: SW111</p><label class="field-label" for="pin">${swahili?'PIN ya tarakimu nne':'Four-digit PIN'}</label><input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">${error?`<div class="error">${error}</div>`:''}<p class="muted">${swahili?'PIN ya mfano: 1440':'Demo PIN: 1440'}</p>${button(swahili?'Thibitisha PIN':'Verify PIN','verify')}</div>`;
+ } else if(page === 'menu') {
+  screen.innerHTML = `<div class="bubble"><p><strong>${swahili?'Karibu, Demo Mini Market!':'Welcome, Demo Mini Market!'}</strong></p><p>${swahili?'Umeingia kwa mafanikio. Chagua huduma unayohitaji:':'You are verified. How can I help you today? Choose an option:'}</p><div class="menu">${menus[lang].map((m,i)=>`<button data-action="report-${i}"><span class="num">${i+1}</span>${m}<span style="margin-left:auto;color:var(--text-muted)">›</span></button>`).join('')}</div></div>`;
+ } else if(page.startsWith('report-')) {
+  const idx = Number(page.split('-')[1]); const r = (swahili?sw:reports)[idx];
+  screen.innerHTML = `<div class="bubble"><p><strong>${r.title}</strong></p><p>${r.intro}</p>${r.rows.map(row=>`<div class="result-row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join('')}${idx===1?`<p class="muted" style="margin-top:10px">${swahili?'Thamani ya hisa hukusaidia kujua kiasi cha pesa kilichowekwa kwenye bidhaa.':'Stock value helps you understand how much money is tied up in inventory.'}</p>`:''}${button(swahili?'Rudi kwenye menyu':'Back to main menu','menu','btn secondary')}${button(swahili?'Anza upya':'Restart demo','restart','btn text')}</div>`;
+ }
+}
+screen.addEventListener('click', e=>{ const b=e.target.closest('button[data-action]'); if(!b)return; const a=b.dataset.action; if(a==='english'){lang='English';page='welcome'} else if(a==='swahili'){lang='Kiswahili';page='welcome'} else if(a==='login'){page='login';error=''} else if(a==='verify'){const v=document.getElementById('pin').value;if(v==='1440'){page='menu';error=''}else{error=lang==='Kiswahili'?'PIN si sahihi. Jaribu tena.':'Incorrect PIN. Please try again.';}} else if(a==='menu'){page='menu'} else if(a==='restart'){page='welcome';lang='English';error=''} else if(a.startsWith('report-')){page=a} render(); });
+render();
+</script>
+</body>
+</html>
